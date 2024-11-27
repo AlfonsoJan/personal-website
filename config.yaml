@@ -1,0 +1,9 @@
+environment: dev
+
+dev:
+  server:
+    port: 8080
+
+prod:
+  server:
+    port: 8080
