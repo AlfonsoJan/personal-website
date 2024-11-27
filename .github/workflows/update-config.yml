@@ -18,7 +18,10 @@ jobs:
 
     - name: Modify config.yaml
       run: |
-        sed -i 's/^environment: dev$/environment: prod/' config.yaml
+        sed -i 's/^\s*environment: dev\s*$/environment: prod/' config.yaml
+
+    - name: Debug - Show config.yaml after modification
+      run: cat config.yaml
 
     - name: Commit changes to config.yaml
       run: |
@@ -26,14 +29,5 @@ jobs:
         git config --global user.email "alfonsobusker@gmail.com"
         git add config.yaml
         git status
-        git commit -m "Change environment from prod to dev"
+        git commit -m "Change environment from dev to prod"
         git push
-
-    - name: Push
-      uses: s0/git-publish-subdir-action@develop
-      env:
-          REPO: self
-          BRANCH: main
-          FOLDER: .
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MESSAGE: "Changed dev to prod"
