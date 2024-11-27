@@ -23,7 +23,13 @@ jobs:
     - name: Debug - Show config.yaml after modification
       run: cat config.yaml
 
-    - name: Commit changes to config.yaml
+    - name: Check if config.yaml changed
+      id: check_changes
+      run: |
+        git diff --exit-code || echo "config.yaml changed"
+    
+    - name: Commit changes to config.yaml (if any)
+      if: steps.check_changes.outcome == 'success'
       run: |
         git config --global user.name "AlfonsoJan"
         git config --global user.email "alfonsobusker@gmail.com"
