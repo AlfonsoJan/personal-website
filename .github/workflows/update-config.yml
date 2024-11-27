@@ -9,7 +9,7 @@ jobs:
   update-config:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       issues: write
 
     steps:
@@ -24,7 +24,8 @@ jobs:
       run: |
         git config --global user.name "AlfonsoJan"
         git config --global user.email "alfonsobusker@gmail.com"
-        git add .
+        git add config.yaml
+        git status
         git commit -m "Change environment from prod to dev"
         git push
 
