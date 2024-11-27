@@ -11,6 +11,8 @@ jobs:
     permissions:
       contents: write
       issues: write
+      pull-requests: write
+      deployments: write
 
     outputs:
       config-changed: ${{ steps.check_changes.outputs.config-changed }}
