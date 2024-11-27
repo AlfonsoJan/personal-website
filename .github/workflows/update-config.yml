@@ -18,7 +18,7 @@ jobs:
 
     - name: Modify config.yaml
       run: |
-        sed -i 's/^environment: prod$/environment: dev/' config.yaml
+        sed -i 's/^environment: dev$/environment: prod/' config.yaml
 
     - name: Commit changes to config.yaml
       run: |
