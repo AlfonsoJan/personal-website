@@ -1,4 +1,4 @@
-environment: prod
+environment: dev
 
 dev:
   server:
