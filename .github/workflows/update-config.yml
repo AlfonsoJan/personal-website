@@ -16,6 +16,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Debug - Show config.yaml before modification
+      run: cat config.yaml
+
     - name: Modify config.yaml
       run: |
         sed -i 's/^\s*environment: dev\s*$/environment: prod/' config.yaml
