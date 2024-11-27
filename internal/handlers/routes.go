@@ -11,5 +11,9 @@ func SetupRoutes(e *echo.Echo) {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
+	e.GET("/test", func(c echo.Context) error {
+		return c.String(http.StatusOK, "TEST!")
+	})
+
 	e.HTTPErrorHandler = ErrorRouting
 }
