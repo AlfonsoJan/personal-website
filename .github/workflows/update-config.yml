@@ -29,11 +29,15 @@ jobs:
     - name: Debug - Show config.yaml after modification
       run: cat config.yaml
 
+    - name: Stage config.yaml for commit
+      run: |
+        git add config.yaml
+
     - name: Check if config.yaml changed
       id: check_changes
       run: |
-        # Check if there's a difference in config.yaml
-        git diff --quiet config.yaml
+        # Check for differences in the staged file (config.yaml)
+        git diff --cached --quiet config.yaml
         if [[ $? -eq 0 ]]; then
           echo "No changes detected in config.yaml"
           echo "config-changed=false" >> $GITHUB_ENV
@@ -47,7 +51,6 @@ jobs:
       run: |
         git config --global user.name "AlfonsoJan"
         git config --global user.email "alfonsobusker@gmail.com"
-        git add config.yaml
         git status
         git commit -m "Change environment from dev to prod"
         git push
