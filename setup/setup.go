@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/alfonsojan/personal-website/internal/config"
+	"github.com/alfonsojan/personal-website/internal/middleware"
 	"github.com/alfonsojan/personal-website/internal/utils/logger"
 	"github.com/labstack/echo/v4"
 )
@@ -22,7 +23,12 @@ func Setup(e *echo.Echo) error {
 	if err := config.SetConfigFile(); err != nil {
 		return err
 	}
+	setupMiddleware(e)
 	return startServerWithGracefulShutdown(e)
+}
+
+func setupMiddleware(e *echo.Echo) {
+	e.Use(middleware.Log)
 }
 
 func startServerWithGracefulShutdown(e *echo.Echo) error {

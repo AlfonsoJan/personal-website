@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/alfonsojan/personal-website/internal/config"
 )
 
 type logEntry struct {
@@ -51,7 +53,9 @@ func (l *customLogger) log(level string, args ...interface{}) {
 	}
 
 	l.fileLogger.Println(string(jsonMessage))
-	l.consoleLogger.Printf("%s [%s] %s", entry.Time, entry.Level, entry.Message)
+	if config.AppConfig.Environment == "dev" {
+		l.consoleLogger.Printf("%s [%s] %s", entry.Time, entry.Level, entry.Message)
+	}
 }
 
 func (l *customLogger) Debug(args ...interface{}) {

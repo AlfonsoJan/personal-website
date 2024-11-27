@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	Server struct {
+	Environment string `mapstructure:"environment"`
+	Server      struct {
 		Port int `yaml:"port"`
 	} `yaml:"server"`
 	Database struct {
@@ -39,6 +40,8 @@ func SetConfigFile() error {
 	if err := envConfig.Unmarshal(&AppConfig); err != nil {
 		return fmt.Errorf("unable to load configuration for environment '%s': %v", env, err)
 	}
+
+	AppConfig.Environment = viper.GetString("environment")
 
 	viper.SetConfigFile(".env")
 	if err := viper.ReadInConfig(); err != nil {
