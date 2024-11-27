@@ -11,9 +11,11 @@ import (
 	"time"
 
 	"github.com/alfonsojan/personal-website/internal/config"
-	"github.com/alfonsojan/personal-website/internal/middleware"
+	"github.com/alfonsojan/personal-website/internal/handlers"
+	request "github.com/alfonsojan/personal-website/internal/middleware"
 	"github.com/alfonsojan/personal-website/internal/utils/logger"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func Setup(e *echo.Echo) error {
@@ -24,11 +26,21 @@ func Setup(e *echo.Echo) error {
 		return err
 	}
 	setupMiddleware(e)
+	setupRoutes(e)
 	return startServerWithGracefulShutdown(e)
 }
 
+func setupRoutes(e *echo.Echo) {
+	e.File("favicon.ico", "./static/images/favicon.ico")
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:   "static",
+		Browse: false,
+	}))
+	handlers.SetupRoutes(e)
+}
+
 func setupMiddleware(e *echo.Echo) {
-	e.Use(middleware.Log)
+	e.Use(request.Log)
 }
 
 func startServerWithGracefulShutdown(e *echo.Echo) error {
