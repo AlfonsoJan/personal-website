@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
+	"github.com/alfonsojan/personal-website/internal/utils/logger"
 	"github.com/alfonsojan/personal-website/setup"
 	"github.com/labstack/echo/v4"
 )
@@ -11,7 +12,7 @@ import (
 func main() {
 	e := echo.New()
 	if err := setup.Setup(e); err != nil {
-		log.Println(err)
+		logger.Logger.Error(fmt.Errorf("error: %v", err))
 		os.Exit(2)
 	}
 }

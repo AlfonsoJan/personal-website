@@ -3,17 +3,20 @@ package setup
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/alfonsojan/personal-website/internal/utils/logger"
 	"github.com/labstack/echo/v4"
 )
 
 func Setup(e *echo.Echo) error {
+	if err := logger.New("app.log"); err != nil {
+		return fmt.Errorf("could not create custom logger: %v", err)
+	}
 	return startServerWithGracefulShutdown(e)
 }
 
@@ -29,7 +32,7 @@ func startServerWithGracefulShutdown(e *echo.Echo) error {
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
-	log.Println("Shutting down server...")
+	logger.Logger.Info("Shutting down server...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -38,7 +41,7 @@ func startServerWithGracefulShutdown(e *echo.Echo) error {
 		return fmt.Errorf("error during server shutdown: %v", err)
 	}
 
-	log.Println("Server gracefully stopped")
+	logger.Logger.Info("Server gracefully stopped")
 
 	select {
 	case err := <-errChan:
