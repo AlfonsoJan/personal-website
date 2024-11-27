@@ -12,6 +12,9 @@ jobs:
       contents: write
       issues: write
 
+    outputs:
+      config-changed: ${{ steps.check_changes.outcome }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -21,7 +24,7 @@ jobs:
 
     - name: Modify config.yaml
       run: |
-        sed -i 's/^\s*environment: dev\s*$/environment: prod/' config.yaml
+        sed -i 's/environment: dev/environment: prod/' config.yaml
 
     - name: Debug - Show config.yaml after modification
       run: cat config.yaml
@@ -29,10 +32,18 @@ jobs:
     - name: Check if config.yaml changed
       id: check_changes
       run: |
-        git diff --exit-code || echo "config.yaml changed"
-    
+        # Check if there's a difference in config.yaml
+        git diff --quiet config.yaml
+        if [[ $? -eq 0 ]]; then
+          echo "No changes detected in config.yaml"
+          echo "config-changed=false" >> $GITHUB_ENV
+        else
+          echo "Changes detected in config.yaml"
+          echo "config-changed=true" >> $GITHUB_ENV
+        fi
+
     - name: Commit changes to config.yaml (if any)
-      if: steps.check_changes.outcome == 'success'
+      if: env.config-changed == 'true'
       run: |
         git config --global user.name "AlfonsoJan"
         git config --global user.email "alfonsobusker@gmail.com"
