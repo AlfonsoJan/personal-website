@@ -8,19 +8,26 @@ on:
 jobs:
   update-config:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
 
     steps:
-    - uses: actions/checkout@main
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Modify config.yaml
       run: |
-        sed -i 's/^environment: prod$/environment: dev/' config.yaml
+        sed -i 's/^\s*environment: dev\s*$/environment: prod/' config.yaml
 
-    - name: Push
-      uses: s0/git-publish-subdir-action@develop
-      env:
-          REPO: self
-          BRANCH: main
-          FOLDER: .
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MESSAGE: "Changed dev to prod"
+    - name: Debug - Show config.yaml after modification
+      run: cat config.yaml
+
+    - name: Commit changes to config.yaml
+      run: |
+        git config --global user.name "AlfonsoJan"
+        git config --global user.email "alfonsobusker@gmail.com"
+        git add config.yaml
+        git status
+        git commit -m "Change environment from dev to prod"
+        git push
