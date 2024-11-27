@@ -13,7 +13,7 @@ jobs:
       issues: write
 
     outputs:
-      config-changed: ${{ steps.check_changes.outcome }}
+      config-changed: ${{ steps.check_changes.outputs.config-changed }}
 
     steps:
     - name: Checkout repository
@@ -36,7 +36,7 @@ jobs:
     - name: Check if config.yaml changed
       id: check_changes
       run: |
-        # Check for differences in the staged file (config.yaml)
+        # Check for staged changes in config.yaml
         git diff --cached --quiet config.yaml
         if [[ $? -eq 0 ]]; then
           echo "No changes detected in config.yaml"
@@ -45,6 +45,7 @@ jobs:
           echo "Changes detected in config.yaml"
           echo "config-changed=true" >> $GITHUB_ENV
         fi
+      continue-on-error: true  # Continue even if the command fails
 
     - name: Commit changes to config.yaml (if any)
       if: env.config-changed == 'true'
