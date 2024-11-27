@@ -20,6 +20,14 @@ jobs:
       run: |
         sed -i 's/^environment: prod$/environment: dev/' config.yaml
 
+    - name: Commit changes to config.yaml
+      run: |
+        git config --global user.name "AlfonsoJan"
+        git config --global user.email "alfonsobusker@gmail.com"
+        git add .
+        git commit -m "Change environment from prod to dev"
+        git push
+
     - name: Push
       uses: s0/git-publish-subdir-action@develop
       env:
