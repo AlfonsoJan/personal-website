@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
+	"github.com/alfonsojan/personal-website/internal/config"
 	"github.com/alfonsojan/personal-website/internal/utils/logger"
 	"github.com/labstack/echo/v4"
 )
@@ -17,13 +19,17 @@ func Setup(e *echo.Echo) error {
 	if err := logger.New("app.log"); err != nil {
 		return fmt.Errorf("could not create custom logger: %v", err)
 	}
+	if err := config.SetConfigFile(); err != nil {
+		return err
+	}
 	return startServerWithGracefulShutdown(e)
 }
 
 func startServerWithGracefulShutdown(e *echo.Echo) error {
+	port := fmt.Sprintf(":%s", strconv.Itoa(config.AppConfig.Server.Port))
 	errChan := make(chan error, 1)
 	go func() {
-		if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
+		if err := e.Start(port); err != nil && err != http.ErrServerClosed {
 			errChan <- fmt.Errorf("error during startup: %v", err)
 		}
 	}()
